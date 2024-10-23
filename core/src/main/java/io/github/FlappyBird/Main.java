@@ -9,26 +9,57 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
+
     private SpriteBatch batch;
-    private Texture image;
+    private Texture[] passaros;
+    private Texture fundo;
+
+
+    //Atribuições de configuração
+
+    private int larguraDispositivo;
+    private int alturaDispositivo;
+
+    private float variacao = 0;
+    private float velocidadeQueda = 0;
+    private float posicaoInicialVertical;
+
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        batch =new SpriteBatch();
+        passaros = new Texture[3];
+        passaros[0] = new Texture("passaro1.png");
+        passaros[1] = new Texture("passaro2.png");
+        passaros[2] = new Texture("passaro3.png");
+
+        fundo = new Texture("fundo.png");
+
+
+        larguraDispositivo = Gdx.graphics.getWidth();
+        alturaDispositivo = Gdx.graphics.getHeight();
+        posicaoInicialVertical = alturaDispositivo / 2;
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+
+        variacao += Gdx.graphics.getDeltaTime() * 10;
+        velocidadeQueda++;
+//        Gdx.app.log("Validação", "Variação:" + Gdx.graphics.getDeltaTime());
+        if(variacao > 2) variacao = 0;
+
+        if(posicaoInicialVertical > 0) {
+            posicaoInicialVertical = posicaoInicialVertical - velocidadeQueda;
+
+        }
+
         batch.begin();
-        batch.draw(image, 140, 210);
+
+        batch.draw(fundo, 0,0,  larguraDispositivo, alturaDispositivo ) ;
+        batch.draw( passaros[ (int) variacao ], 30,  posicaoInicialVertical);
+
         batch.end();
     }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        image.dispose();
-    }
 }
